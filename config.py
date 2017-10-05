@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-REDIS_HOST = '119.29.194.163'
+REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 REDIS_PWD = None
 
