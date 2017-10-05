@@ -10,18 +10,20 @@ class RedisClient():
         pool = redis.ConnectionPool(host=config.REDIS_HOST,port=config.REDIS_PORT)
         self.r = redis.Redis(connection_pool=pool)
 
-    def get(self):
-        if self.count() < 1:
+    def get(self,key):
+        if self.count(key) < 1:
             return None
-        address = self.r.spop('proxy_list')
-        r = requests.get(config.TEST_URL,proxies=address)
-        if r.status_code == '200':
-            return address
+        address = self.r.spop('proxy_list_%s'%key)
+        try:
+            requests.get(config.TEST_URL[key], proxies={key: '%s://%s' % (key,address)},timeout=30)
+        except:
+            return self.get(key)
         else:
-            return self.get()
+            return address
 
-    def add(self,value):
-        self.r.sadd('proxy_list',value)
 
-    def count(self):
-        return self.r.scard('proxy_list')
+    def add(self,value,key):
+        return self.r.sadd('proxy_list_%s'%key,value)
+
+    def count(self,key):
+        return self.r.scard('proxy_list_%s'%key)
