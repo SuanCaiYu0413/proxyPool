@@ -14,12 +14,7 @@ class RedisClient():
         if self.count(key) < 1:
             return None
         address = self.r.spop('proxy_list_%s'%key)
-        try:
-            requests.get(config.TEST_URL[key], proxies={key: '%s://%s' % (key,address)},timeout=30)
-        except:
-            return self.get(key)
-        else:
-            return address
+        return address
 
 
     def add(self,value,key):

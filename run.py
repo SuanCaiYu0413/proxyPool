@@ -2,6 +2,7 @@
 import threading
 import proxy_spider
 import db
+import validate
 from flask import Flask,jsonify
 app = Flask(__name__)
 
@@ -20,8 +21,11 @@ def get_ip(key):
         return jsonify({'ip':'None','key':key})
 
 def crawl():
+
+    validate.Vali().vali_all()
     a = proxy_spider.XCSpider()
     a.parser()
+    del a
     global timer
     timer = threading.Timer(900, crawl)
     timer.start()
